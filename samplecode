@@ -1,0 +1,29 @@
+#Import libraries
+from qiskit import *
+%matplotlib inline
+from qiskit.tools.visualization import plot_histogram
+from qiskit.tools.visualization import plot_bloch_multivector
+secretNumber = '1000101' # Adding a secret number we will never pass this number any where
+circuit = QuantumCircuit(8,7) #Plain Quantum Circuit
+circuit.draw(output ='mpl') # to check the initial diagram before adding gates
+#Adding the Hadmard gate and other quantum gates
+circuit.h([0,1,2,3,4,5,6]) 
+circuit.x(7)
+circuit.barrier()
+circuit.cx(6,7) 
+circuit.cx(2,7)
+circuit.cx(0,7)
+circuit.barrier()
+circuit.h([0,1,2,3,4,5,6])
+circuit.measure([0,1,2,3,4,5,6],[0,1,2,3,4,5,6])
+circuit.draw(output = 'mpl') # Check the diagram wtih gates as expected
+#Running the simulator
+simulator = Aer.get_backend('qasm_simulator')
+result = execute(circuit, backend=simulator, shots=10).result()
+counts = result.get_counts()
+print(counts)
+#if you want output in a histogram
+simulator = Aer.get_backend('qasm_simulator')
+result = execute(circuit, backend=simulator, shots=1).result()
+from qiskit.visualization import plot_histogram
+plot_histogram(result.get_counts(circuit))
